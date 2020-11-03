@@ -1,1 +1,128 @@
-<!DOCTYPE html><html><head>	<title>Boston Scientific</title>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">    <!-- CSS only -->    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">    <!-- JS, Popper.js, and jQuery -->    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>	<link rel="stylesheet" href="css/style.css">  <!-- for slider -->    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>  <script type="text/javascript">  $( document ).ready(function() {      $(".instrumentsoverview").on("swipeleft",function(){        $(".screen1 .instrumentsoverview .cont .customslider .slide1").addClass("moveperv");        $(".screen1 .instrumentsoverview .cont .dots .activeone").removeClass("activeone");        $(".screen1 .instrumentsoverview .cont .dots .slide2").addClass("activeone");      });      $(".instrumentsoverview").on("swiperight",function(){        $(".screen1 .instrumentsoverview .cont .customslider .slide1").removeClass("moveperv");        $(".screen1 .instrumentsoverview .cont .dots .activeone").removeClass("activeone");        $(".screen1 .instrumentsoverview .cont .dots .slide1").addClass("activeone");      });    });  </script></head><body><div class="c_wrapper screen1">    <div class="leftborder"></div>    <div class="leftmenu">        <img src="img/BoSclogo.png" class="BoSclogo" alt="">        <img src="img/vertiflexlogo.png" class="vertiflexlogo" alt="">        <h1>Interactive Procedure</h1>        <a href="begin.html" onclick="window.location.href='begin.html'">            <img src="img/playbutton.svg" class="playbutton" alt="">            Begin        </a>        <div class="bottombtns">            <div class="placeforbtn">                <a href="" class="instrumentspopup">                    <img src="img/instrumenticon.svg" alt="">                    Instruments overview                </a>            </div>            <div class="placeforbtn">                <a href="" class="instructionsforusepopup">                    <img src="img/ifuicon.svg" alt="">                    Instructions for use                </a>            </div>        </div>    </div>    <div class="instrumentsoverview">        <div class="topside">            <img src="img/close.svg" class="closex" alt="">            <img src="img/vertiflexlogo.png" alt="">            <h2>Single-use Instruments</h2>        </div>        <div class="cont">            <div class="customslider">                <div class="slide1">                    <img src="img/instrumentsoverview1.png" alt="">                </div>                <div class="slide2">                    <img src="img/instrumentsoverview2.png" alt="">                </div>            </div>            <div class="dots">                <div class="slide1 activeone"></div>                <div class="slide2"></div>            </div>        </div>    </div>    <div class="instructionsforuse">        <div class="topside">            <a href="" class="closex">Back</a>            <h1>Instructions for Use</h1>        </div>        <div class="slider">            <iframe src="https://drive.google.com/file/d/1_A1RP18HrmrHKzykkss6wz-aVuf7seWx/preview" width="100%" height="100%"></iframe>        </div>    </div></div><script src="js/main.js"></script></body></html>
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>image sequence example</title>
+</head>
+<style type="text/css">
+	.image_sequence {
+		width: 1024px;
+		height: 580px;
+		overflow: hidden;
+	}
+	body{
+		overflow: hidden;
+	}
+</style>
+
+<script type="text/javascript" src='./jquery-3.1.1.min.js'></script>
+<script type="text/javascript" src='./image_sequence.js'></script>
+<script type="text/javascript">
+	//config params
+	const imageWidth = 1024
+	const imageHeight = 580
+	const frameRate = 100
+	const sequenceFlows = [
+		{ prefix: './1/Main_0', start: 1148, end: 1158, extension: 'png' },
+		{ prefix: './2/Main_0', start: 1160, end: 1187, extension: 'png' },
+		{ prefix: './3/Main_0', start: 1188, end: 1206, extension: 'png' },
+	]
+	//end of config
+
+	let started = false
+	let sequenceIndex = 0
+	var sequence = undefined
+	var intervalTimer = undefined
+
+	function loaded() {
+		var container = $(".image_sequence")[0]
+
+		var imageSequence = sequenceFlows[sequenceIndex]
+		sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+		sequence.jumpToFrame(0)
+
+		configTouch()
+	}
+
+	function configTouch() {
+		started = false
+		var container = $(".image_sequence")[0]
+
+		var touchArea = document.createElement("div");
+		touchArea.style.position = "absolute";
+		touchArea.style.width = imageWidth + "px";
+		touchArea.style.height = imageHeight + "px";
+
+		touchArea.addEventListener('touchstart', function (event) { touchBegan(); }, false);
+		touchArea.addEventListener('mousedown', function (event) { touchBegan(); }, false);
+		touchArea.addEventListener('onmousedown', function (event) { touchBegan(); }, false);
+
+		container.append(touchArea);
+	}
+
+	function touchBegan() {
+		if (!started) {
+			started = true
+			loadSequence()
+		}
+
+		event.stopPropagation();
+		event.preventDefault();
+	}
+
+	function loadSequence() {
+		var container = $(".image_sequence")[0]
+		// sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+
+		// sequence.jumpToFrame(0)
+		if (intervalTimer) {
+			clearInterval(intervalTimer)
+			intervalTimer = null
+		}
+		intervalTimer = setInterval(function () {
+			let newIndex = sequence.currentIndex + 1
+			if (newIndex >= sequence.imageNameArray.length) {
+				if (intervalTimer) {
+					clearInterval(intervalTimer)
+					intervalTimer = null
+				}
+				if (sequenceIndex < (sequenceFlows.length - 1)) {
+					sequenceIndex += 1
+					// configTouch()
+					var imageSequence = sequenceFlows[sequenceIndex]
+					sequence.appendSequence(imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+					started = false
+				} else {
+					console.log('end');
+
+					started = false
+					sequenceIndex = 0
+					sequence = undefined
+					intervalTimer = undefined
+
+					var container = $(".image_sequence")[0]
+
+					var imageSequence = sequenceFlows[sequenceIndex]
+					sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+					sequence.jumpToFrame(0)
+
+					configTouch();
+
+					window.parent.tool3cose(); 
+				}
+			} else {
+				sequence.jumpToFrame(newIndex)
+			}
+		}, 100)
+	}
+
+
+</script>
+
+<body onload='loaded()'>
+
+	<div class='image_sequence'></div>
+
+</body>
+
+</html>
