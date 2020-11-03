@@ -64,6 +64,7 @@
 		if (!started) {
 			started = true
 			loadSequence()
+			parent.tool3cose(); 
 		}
 
 		event.stopPropagation();
@@ -108,7 +109,6 @@
 
 					configTouch();
 
-					window.parent.tool3cose(); 
 				}
 			} else {
 				sequence.jumpToFrame(newIndex)
