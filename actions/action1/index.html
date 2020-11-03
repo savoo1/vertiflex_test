@@ -94,21 +94,22 @@
 					started = false
 				} else {
 					console.log('end');
+					setTimeout(function(){ 
+						parent.tool3cose(); 
 
-					started = false
-					sequenceIndex = 0
-					sequence = undefined
-					intervalTimer = undefined
+						started = false
+						sequenceIndex = 0
+						sequence = undefined
+						intervalTimer = undefined
 
-					var container = $(".image_sequence")[0]
+						var container = $(".image_sequence")[0]
 
-					var imageSequence = sequenceFlows[sequenceIndex]
-					sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
-					sequence.jumpToFrame(0)
+						var imageSequence = sequenceFlows[sequenceIndex]
+						sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+						sequence.jumpToFrame(0)
 
-					parent.tool3cose(); 
-					configTouch();
-
+						configTouch();
+					 }, 120);
 				}
 			} else {
 				sequence.jumpToFrame(newIndex)
