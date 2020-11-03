@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>image sequence example</title>
+</head>
+<style type="text/css">
+	.image_sequence {
+		width: 1024px;
+		height: 580px;
+		overflow: hidden;
+	}
+	body{
+		overflow: hidden;
+	}
+</style>
+
+<script type="text/javascript" src='./jquery-3.1.1.min.js'></script>
+<script type="text/javascript" src='./image_sequence.js'></script>
+<script type="text/javascript">
+	//config params
+	const imageWidth = 1024
+	const imageHeight = 580
+	const frameRate = 100
+	const sequenceFlows = [
+		{ prefix: './1/Main_0', start: 1148, end: 1158, extension: 'png' },
+		{ prefix: './2/Main_0', start: 1160, end: 1187, extension: 'png' },
+		{ prefix: './3/Main_0', start: 1188, end: 1206, extension: 'png' },
+	]
+	//end of config
+
+	let started = false
+	let sequenceIndex = 0
+	var sequence = undefined
+	var intervalTimer = undefined
+
+	function loaded() {
+		var container = $(".image_sequence")[0]
+
+		var imageSequence = sequenceFlows[sequenceIndex]
+		sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+		sequence.jumpToFrame(0)
+
+		configTouch()
+	}
+
+	function configTouch() {
+		started = false
+		var container = $(".image_sequence")[0]
+
+		var touchArea = document.createElement("div");
+		touchArea.style.position = "absolute";
+		touchArea.style.width = imageWidth + "px";
+		touchArea.style.height = imageHeight + "px";
+
+		touchArea.addEventListener('touchstart', function (event) { touchBegan(); }, false);
+		touchArea.addEventListener('mousedown', function (event) { touchBegan(); }, false);
+		touchArea.addEventListener('onmousedown', function (event) { touchBegan(); }, false);
+
+		container.append(touchArea);
+	}
+
+	function touchBegan() {
+		if (!started) {
+			started = true
+			loadSequence()
+		}
+
+		event.stopPropagation();
+		event.preventDefault();
+	}
+
+	function loadSequence() {
+		var container = $(".image_sequence")[0]
+		// sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+
+		// sequence.jumpToFrame(0)
+		if (intervalTimer) {
+			clearInterval(intervalTimer)
+			intervalTimer = null
+		}
+		intervalTimer = setInterval(function () {
+			let newIndex = sequence.currentIndex + 1
+			if (newIndex >= sequence.imageNameArray.length) {
+				if (intervalTimer) {
+					clearInterval(intervalTimer)
+					intervalTimer = null
+				}
+				if (sequenceIndex < (sequenceFlows.length - 1)) {
+					sequenceIndex += 1
+					// configTouch()
+					var imageSequence = sequenceFlows[sequenceIndex]
+					sequence.appendSequence(imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+					started = false
+				} else {
+					console.log('end');
+
+					started = false
+					sequenceIndex = 0
+					sequence = undefined
+					intervalTimer = undefined
+
+					var container = $(".image_sequence")[0]
+
+					var imageSequence = sequenceFlows[sequenceIndex]
+					sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
+					sequence.jumpToFrame(0)
+
+					configTouch();
+
+					window.parent.tool3cose(); 
+				}
+			} else {
+				sequence.jumpToFrame(newIndex)
+			}
+		}, 100)
+	}
+
+
+</script>
+
+<body onload='loaded()'>
+
+	<div class='image_sequence'></div>
+
+</body>
+
+</html>
