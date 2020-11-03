@@ -649,6 +649,9 @@ button:focus {
   bottom: 0;
   overflow: hidden;
   background: #fff;
+  z-index: -9999;
+  overflow: hidden;
+  opacity: 0;
   -webkit-transition: all .25s ease;
   -moz-transition: all .25s ease;
   -ms-transition: all .25s ease;
@@ -658,14 +661,6 @@ button:focus {
     border: 0;
     overflow: hidden;
     height: auto; }
-  .tool3_event .blaaa {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: black;
-    opacity: 0.1; }
 
 .tool_event_active {
   z-index: 10;
