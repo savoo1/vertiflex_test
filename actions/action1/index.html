@@ -63,7 +63,6 @@
 	function touchBegan() {
 		if (!started) {
 			started = true
-			parent.tool3cose(); 
 			loadSequence();
 		}
 
@@ -107,6 +106,7 @@
 					sequence = new ImageSequence(container, imageWidth, imageHeight, imageSequence.prefix, imageSequence.start, imageSequence.end, imageSequence.extension)
 					sequence.jumpToFrame(0)
 
+					parent.tool3cose(); 
 					configTouch();
 
 				}
